@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &331878961420516003
+--- !u!1 &6006108064209613331
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,47 +8,48 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 1139624580757151769}
-  - component: {fileID: 4071000152987037628}
-  - component: {fileID: 2277676098379225974}
-  - component: {fileID: 3584172912919439568}
-  m_Layer: 6
-  m_Name: Cube_Grass_Single
-  m_TagString: Ground
+  - component: {fileID: 6346183044170442921}
+  - component: {fileID: 8051855933811058444}
+  - component: {fileID: 5213205767208637382}
+  - component: {fileID: 6914576635291092786}
+  - component: {fileID: 1765466021455562675}
+  m_Layer: 0
+  m_Name: Grass_3
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 8
+  m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &1139624580757151769
+--- !u!4 &6346183044170442921
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 331878961420516003}
-  m_LocalRotation: {x: -0.7069834, y: 0, z: 0, w: 0.7072302}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 5}
+  m_GameObject: {fileID: 6006108064209613331}
+  m_LocalRotation: {x: -0.632932, y: -0.3149961, z: -0.31510603, w: 0.633153}
+  m_LocalPosition: {x: 2.925334, y: -2.876, z: 22.072752}
+  m_LocalScale: {x: 40, y: 40, z: 40}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: -89.98, y: 0, z: 0}
---- !u!33 &4071000152987037628
+  m_LocalEulerAnglesHint: {x: -89.98, y: 0, z: -52.917}
+--- !u!33 &8051855933811058444
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 331878961420516003}
-  m_Mesh: {fileID: -3316878657673558038, guid: 62b779ba06b675841b25ea769265b4d3, type: 3}
---- !u!23 &2277676098379225974
+  m_GameObject: {fileID: 6006108064209613331}
+  m_Mesh: {fileID: 2473454217926071470, guid: 73c21ea824ece294fa882645418289bc, type: 3}
+--- !u!23 &5213205767208637382
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 331878961420516003}
+  m_GameObject: {fileID: 6006108064209613331}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -62,10 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 6609165504356089444, guid: 62b779ba06b675841b25ea769265b4d3, type: 3}
-  - {fileID: 8027599372619836701, guid: 62b779ba06b675841b25ea769265b4d3, type: 3}
-  - {fileID: -6311603398430641927, guid: 62b779ba06b675841b25ea769265b4d3, type: 3}
-  - {fileID: -8580863504186246832, guid: 62b779ba06b675841b25ea769265b4d3, type: 3}
+  - {fileID: 6609165504356089444, guid: 73c21ea824ece294fa882645418289bc, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -87,17 +85,33 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3584172912919439568
+--- !u!64 &6914576635291092786
 MeshCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 331878961420516003}
+  m_GameObject: {fileID: 6006108064209613331}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 4
   m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: -3316878657673558038, guid: 62b779ba06b675841b25ea769265b4d3, type: 3}
+  m_Mesh: {fileID: 2473454217926071470, guid: 73c21ea824ece294fa882645418289bc, type: 3}
+--- !u!208 &1765466021455562675
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6006108064209613331}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 1
+  m_Extents: {x: 0.015, y: 0.005, z: 0.015}
+  m_MoveThreshold: 0.1
+  m_Carve: 1
+  m_CarveOnlyStationary: 1
+  m_Center: {x: -0.003, y: 0, z: 0.058000002}
+  m_TimeToStationary: 0.5

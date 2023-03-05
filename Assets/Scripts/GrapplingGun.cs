@@ -1,14 +1,19 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Linq;
+using UnityEngine;
 
 public class GrapplingGun : MonoBehaviour
 {
-    [Header("Layers")] 
-    [SerializeField] private LayerMask _whatIsGrappleable;
+    [Header("Layers")] [SerializeField] private LayerMask _whatIsGrappleable;
     [SerializeField] private LayerMask _whatIsCrabLayer;
     [SerializeField] private LayerMask _whatIsTreeLayer;
 
     [Space(0.5f)] [Header("Rope Position")] [SerializeField]
     private Transform _ropePosition;
+
+    [SerializeField] private float _spring = 4.5f;
+    [SerializeField] private float _damper = 7f;
+    [SerializeField] private float _massScale = 2f;
 
     private Transform _camera, _player;
 
@@ -46,25 +51,7 @@ public class GrapplingGun : MonoBehaviour
     {
         RaycastHit hit;
 
-        if (Physics.Raycast(_camera.position, _camera.forward, out hit, _maxDistance, _whatIsGrappleable))
-        {
-            _grapplePoint = hit.point;
-
-            _joint = _player.gameObject.AddComponent<SpringJoint>();
-            _joint.autoConfigureConnectedAnchor = true;
-            _joint.connectedAnchor = _grapplePoint;
-
-            var distanceFromPoint = Vector3.Distance(_player.position, _grapplePoint);
-            _joint.maxDistance = distanceFromPoint * 0.8f;
-            _joint.minDistance = distanceFromPoint * 0.25f;
-
-            _joint.spring = 4.5f;
-            _joint.damper = 7f;
-            _joint.massScale = 4.5f;
-
-            _lineRenderer.positionCount = 2;
-        }
-        else if (Physics.Raycast(_camera.position, _camera.forward, out hit, _maxDistance, _whatIsCrabLayer))
+        if (Physics.Raycast(_camera.position, _camera.forward, out hit, _maxDistance, _whatIsCrabLayer))
         {
             _grapplePoint = hit.point;
 
@@ -72,19 +59,37 @@ public class GrapplingGun : MonoBehaviour
             _lineRenderer.positionCount = 2;
 
             hit.transform.GetComponent<Health>().TakeDamage(10);
-
-            Invoke(nameof(StopGrapple), .25f);
         }
-        else if (Physics.Raycast(_camera.position, _camera.forward, out hit, _maxDistance, _whatIsTreeLayer))
+
+        if (Physics.Raycast(_camera.position, _camera.forward, out hit, _maxDistance, _whatIsTreeLayer))
         {
             _grapplePoint = hit.point;
-            
+
             _joint = _player.gameObject.AddComponent<SpringJoint>();
             _lineRenderer.positionCount = 2;
 
             hit.transform.GetComponent<Tree>().DeleteFruits();
-            Invoke(nameof(StopGrapple), .25f);
+        }
 
+        if (Physics.Raycast(_camera.position, _camera.forward, out hit, _maxDistance, _whatIsGrappleable))
+        {
+            _grapplePoint = hit.point;
+
+            _joint = _player.gameObject.AddComponent<SpringJoint>();
+            _joint.autoConfigureConnectedAnchor = false;
+            _joint.connectedAnchor = _grapplePoint;
+
+            _player.GetComponent<Rigidbody>().useGravity = false;
+
+            var distanceFromPoint = Vector3.Distance(_player.position, _grapplePoint);
+            _joint.maxDistance = distanceFromPoint * 0.8f;
+            _joint.minDistance = distanceFromPoint * 0.25f;
+
+            _joint.spring = _spring;
+            _joint.damper = _damper;
+            _joint.massScale = _massScale;
+
+            _lineRenderer.positionCount = 2;
         }
     }
 
@@ -99,7 +104,8 @@ public class GrapplingGun : MonoBehaviour
     private void StopGrapple()
     {
         _lineRenderer.positionCount = 0;
-        if (_joint is not null)
-            Destroy(_joint);
+        var joints = _player.GetComponents<Joint>().ToList();
+        joints.ForEach(Destroy);
+        _player.GetComponent<Rigidbody>().useGravity = true;
     }
 }

@@ -1,68 +1,31 @@
-using System;
-using System.Linq;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float _speed = 10;
-    [SerializeField] private float _time = 10;
+    [SerializeField] private float _jumpForce = 10;
+    [SerializeField] private LayerMask _whatIsGround;
+    [SerializeField] private float _radius;
 
     private Rigidbody _rigidbody;
 
     private float _horizontalInput;
     private float _verticalInput;
-
-    private bool CanAttracted = false;
-
-    private Health _health;
-
-    public event EventHandler MovingEnded;
-    public event EventHandler<int> HealthChanged;
+    private bool _onGround;
 
     private void Start()
     {
         _rigidbody = GetComponent<Rigidbody>();
-        
-        _health = GetComponent<Health>();
-        _health.HealthChanged += OnHealthChanged;
-        
+
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
-
-        var trees = FindObjectsOfType<Tree>().ToList();
-        foreach (var item in trees)
-        {
-            item.FruitCollected += OnFruitCollected;
-        }
-    }
-
-    private void OnFruitCollected(object sender, int e)
-    {
-        _health.Hill(e);
-    }
-
-    private void OnHealthChanged(object sender, int e)
-    {
-        HealthChanged?.Invoke(sender, e);
-    }
-
-    private void OnHookHooked(object sender, Vector3 hookPosition)
-    {
-        gameObject.LeanMove(hookPosition, _time);
-        CanAttracted = true;
     }
 
     private void Update()
     {
         Move();
-
-        if (!gameObject.LeanIsTweening() && CanAttracted)
-        {
-            MovingEnded?.Invoke(this, null);
-            gameObject.LeanCancel();
-            CanAttracted = false;
-        }
+        Jump();
     }
 
     private void Move()
@@ -74,5 +37,30 @@ public class PlayerMovement : MonoBehaviour
             _rigidbody.velocity.y, _verticalInput * _speed));
 
         _rigidbody.velocity = movement;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            _onGround = true;
+        }
+    }
+    
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            _onGround = false;
+        }
+    }
+
+    private void Jump()
+    {
+        if (Input.GetKeyDown(KeyCode.Space) && _onGround)
+        {
+            _rigidbody.AddForce(Vector3.up * _jumpForce, ForceMode.Impulse);
+            _onGround = false;
+        }
     }
 }

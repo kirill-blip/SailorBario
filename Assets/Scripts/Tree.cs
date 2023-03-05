@@ -14,8 +14,10 @@ public class Tree : MonoBehaviour
     private MeshRenderer _meshRenderer;
     private MeshCollider _meshCollider;
 
+    private bool _isCollected = false;
+
     public event EventHandler<int> FruitCollected;
-    
+
     private void Start()
     {
         _meshFilter = GetComponent<MeshFilter>();
@@ -25,13 +27,17 @@ public class Tree : MonoBehaviour
 
     public void DeleteFruits()
     {
+        if (_isCollected) return;
+
         ChangeMeshAndColors(_treeWithoutFruitMesh, _colorsTreeWithoutFruit);
         FruitCollected?.Invoke(this, HillPoints);
+        _isCollected = true;
     }
 
     public void AddFruit()
     {
         ChangeMeshAndColors(_treeFruitMesh, _colorsTreeFruit);
+        _isCollected = false;
     }
 
     private void ChangeMeshAndColors(Mesh mesh, Material[] materials)

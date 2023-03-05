@@ -20,7 +20,9 @@ public class Health : MonoBehaviour
         if (damage <= 0) return;
 
         _currentHealth -= damage;
-
+        
+        print($"{gameObject.name}'s health is {_currentHealth}");
+        
         HealthChanged?.Invoke(this, _currentHealth);
 
         if (_currentHealth <= _minHealth) Kill();

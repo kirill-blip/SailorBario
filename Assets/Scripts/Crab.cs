@@ -61,7 +61,7 @@ public class Crab : MonoBehaviour
 
         _walkPoint = new Vector3(transform.position.x + randomX, transform.position.y, transform.position.z + randomZ);
 
-        if (Physics.Raycast(_walkPoint, -transform.up, 2f, WhatIsGround))
+        if (Physics.Raycast(_walkPoint, -transform.up, 0.1f, WhatIsGround))
             _walkPointSet = true;
     }
 
@@ -94,5 +94,7 @@ public class Crab : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, AttackRange);
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, SightRange);
+        Gizmos.color = Color.blue;
+        Gizmos.DrawWireSphere(transform.position, WalkPointRange);
     }
 }
