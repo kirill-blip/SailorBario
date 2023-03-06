@@ -2,6 +2,8 @@
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(Health))]
+[RequireComponent(typeof(Animator))]
 public class Crab : MonoBehaviour
 {
     public int Damage = 5;
@@ -10,29 +12,50 @@ public class Crab : MonoBehaviour
     public float SightRange;
     public float AttackRange;
     public float WalkPointRange;
-    
+
     public LayerMask WhatIsGround;
     public LayerMask WhatIsPlayer;
-    
+
     private NavMeshAgent _agent;
     private Transform _playerTransform;
+    private Animator _animator;
+    private Health _health;
 
     private Vector3 _walkPoint;
-    
+
     private bool _walkPointSet;
-    private bool alreadyAttacked;
+    private bool _alreadyAttacked;
     private bool _playerInSightRange;
     private bool _playerInAttackRange;
 
+    private bool _canMove = true;
+
     private void Awake()
     {
-        
+        _animator = GetComponent<Animator>();
         _playerTransform = FindObjectOfType<PlayerMovement>().transform;
         _agent = GetComponent<NavMeshAgent>();
+        _health = GetComponent<Health>();
+        _health.CanDestroyWithoutAnimation = false;
+        _health.HealthChanged += OnHealthChanged;
+    }
+
+    private void OnHealthChanged(object sender, int e)
+    {
+        if (e <= 0)
+        {
+            _animator.SetBool("IsDead", true);
+            _agent.SetDestination(transform.position);
+            _health.KillInTime(2f);
+
+            _canMove = false;
+        }
     }
 
     private void Update()
     {
+        if (!_canMove) return;
+
         _playerInSightRange = Physics.CheckSphere(transform.position, SightRange, WhatIsPlayer);
         _playerInAttackRange = Physics.CheckSphere(transform.position, AttackRange, WhatIsPlayer);
 
@@ -74,18 +97,27 @@ public class Crab : MonoBehaviour
     {
         _agent.SetDestination(transform.position);
 
-        if (!alreadyAttacked)
+        if (!_alreadyAttacked)
         {
+            RotateToPlayer();
+            _animator.SetBool("IsAttacking", true);
             _playerTransform.GetComponent<Health>().TakeDamage(Damage);
-            
-            alreadyAttacked = true;
+
+            _alreadyAttacked = true;
             Invoke(nameof(ResetAttack), TimeBetweenAttacks);
         }
     }
 
     private void ResetAttack()
     {
-        alreadyAttacked = false;
+        _animator.SetBool("IsAttacking", false);
+        _alreadyAttacked = false;
+    }
+
+    private void RotateToPlayer()
+    {
+        var towards = _playerTransform.position - transform.position;
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(towards), _agent.angularSpeed);
     }
 
     private void OnDrawGizmosSelected()

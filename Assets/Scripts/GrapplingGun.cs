@@ -60,8 +60,7 @@ public class GrapplingGun : MonoBehaviour
 
             hit.transform.GetComponent<Health>().TakeDamage(10);
         }
-
-        if (Physics.Raycast(_camera.position, _camera.forward, out hit, _maxDistance, _whatIsTreeLayer))
+        else if (Physics.Raycast(_camera.position, _camera.forward, out hit, _maxDistance, _whatIsTreeLayer))
         {
             _grapplePoint = hit.point;
 
@@ -70,8 +69,7 @@ public class GrapplingGun : MonoBehaviour
 
             hit.transform.GetComponent<Tree>().DeleteFruits();
         }
-
-        if (Physics.Raycast(_camera.position, _camera.forward, out hit, _maxDistance, _whatIsGrappleable))
+        else if (Physics.Raycast(_camera.position, _camera.forward, out hit, _maxDistance, _whatIsGrappleable))
         {
             _grapplePoint = hit.point;
 

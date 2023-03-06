@@ -2,7 +2,6 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-using UnityEditor;
 using UnityEngine.UI;
 
 public class UI : MonoBehaviour
@@ -21,21 +20,20 @@ public class UI : MonoBehaviour
     {
         _playerController = FindObjectOfType<PlayerController>();
         _playerController.Health.HealthChanged += OnHealthChanged;
-        _playerController.CoinsCountChanged += OnCoinsCountChanged;
+        _playerController.Wallet.CoinsCountChanged += OnCoinsCountChanged;
+
         var chests = FindObjectsOfType<Chest>();
 
         foreach (var item in chests)
         {
-            item.PlayerEntered += OnPlayerEntered;
-            item.PlayerExited += OnPlayerExited;
+            item.PlayerEnteredOrExited += OnPlayerEnteredOrExited;
         }
 
-        var dragon = FindObjectOfType<Dragon>();
-        dragon.PlayerEntered += OnPlayerEnteredDragon;
-        dragon.PlayerExited += OnPlayerExitedDragon;
+        var skeleton = FindObjectOfType<Skeleton>();
+        skeleton.PlayerEnteredOrExited += SkeletonOnPlayerEnteredOrExited;
 
         var tower = FindObjectOfType<Tower>();
-        tower.PlayerIsHere += OnPlayerIsHere;
+        tower.PlayerEnteredOrExited += OnPlayerEnteredOrExited;
         tower.PlayerPressed += OnPlayerPressed;
     }
 
@@ -44,20 +42,9 @@ public class UI : MonoBehaviour
         StartCoroutine(ChangeColor());
     }
 
-    private void OnPlayerIsHere(object sender, EventArgs e)
+    private void SkeletonOnPlayerEnteredOrExited(object sender, EventArgs e)
     {
-        _tipText.gameObject.SetActive(true);
-    }
-
-
-    private void OnPlayerEnteredDragon(object sender, EventArgs e)
-    {
-        _dragonWordsText.gameObject.SetActive(true);
-    }
-
-    private void OnPlayerExitedDragon(object sender, EventArgs e)
-    {
-        _dragonWordsText.gameObject.SetActive(false);
+        _dragonWordsText.gameObject.SetActive(!_dragonWordsText.gameObject.activeInHierarchy);
     }
 
     private void OnCoinsCountChanged(object sender, int e)
@@ -65,14 +52,9 @@ public class UI : MonoBehaviour
         _coinsCountText.text = e.ToString();
     }
 
-    private void OnPlayerExited(object sender, EventArgs e)
+    private void OnPlayerEnteredOrExited(object sender, EventArgs e)
     {
-        _tipText.gameObject.SetActive(false);
-    }
-
-    private void OnPlayerEntered(object sender, EventArgs e)
-    {
-        _tipText.gameObject.SetActive(true);
+        _tipText.gameObject.SetActive(!_tipText.gameObject.activeInHierarchy);
     }
 
     private void OnHealthChanged(object sender, int e)

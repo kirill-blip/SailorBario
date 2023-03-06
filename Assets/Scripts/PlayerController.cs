@@ -3,27 +3,32 @@ using UnityEngine;
 
 [RequireComponent(typeof(Health))]
 [RequireComponent(typeof(PlayerMovement))]
+[RequireComponent(typeof(Wallet))]
 public class PlayerController : MonoBehaviour
 {
     private int _coinsCount;
 
     private Health _health;
     private PlayerMovement _playerMovement;
-
-    public event EventHandler<int> CoinsCountChanged;
+    private Wallet _wallet;
 
     public Health Health
     {
         get { return _health; }
     }
 
-    private bool _isNearChest = false;
-    private Chest _chest;
+    public Wallet Wallet
+    {
+        get { return _wallet; }
+    }
+
+    private IInteractable _interactable;
 
     private void Awake()
     {
         _health = GetComponent<Health>();
         _playerMovement = GetComponent<PlayerMovement>();
+        _wallet = GetComponent<Wallet>();
     }
 
     private void Start()
@@ -39,58 +44,36 @@ public class PlayerController : MonoBehaviour
 
         foreach (var item in chests)
         {
-            item.PlayerEntered += OnPlayerEntered;
-            item.PlayerExited += OnPlayerExited;
+            item.PlayerEnteredOrExited += OnPlayerEnteredOrExited;
             item.ChestCollected += OnChestCollected;
         }
+
+        var gordon = FindObjectOfType<Skeleton>();
+        gordon.PlayerEnteredOrExited += OnPlayerEnteredOrExited;
+
+        FindObjectOfType<Tower>().PlayerEnteredOrExited += OnPlayerEnteredOrExited;
     }
 
     private void Update()
     {
-        if (_isNearChest && Input.GetKeyDown(KeyCode.E))
+        if (_interactable != null && Input.GetKeyDown(KeyCode.E))
         {
-            if (!_chest.IsOpen)
-            {
-                _chest.Open();
-            }
-            else
-            {
-                _chest.Collect();
-            }
+            _interactable.Interact();
         }
     }
 
-    private void OnPlayerExited(object sender, EventArgs e)
+    private void OnPlayerEnteredOrExited(object sender, EventArgs e)
     {
-        _chest = null;
-        _isNearChest = false;
-    }
-
-    private void OnPlayerEntered(object sender, EventArgs e)
-    {
-        _isNearChest = true;
-        _chest = sender as Chest;
+        _interactable = _interactable == null ? sender as IInteractable : null;
     }
 
     private void OnChestCollected(object sender, int e)
     {
-        _coinsCount += e;
-        CoinsCountChanged?.Invoke(this, _coinsCount);
+        _wallet.AddCoins(e);
     }
 
     private void OnFruitCollected(object sender, int e)
     {
         _health.Hill(e);
-    }
-
-    public int GetCoins()
-    {
-        return _coinsCount;
-    }
-
-    public void RemoveCoins(int coins)
-    {
-        _coinsCount -= coins;
-        CoinsCountChanged?.Invoke(this, _coinsCount);
     }
 }

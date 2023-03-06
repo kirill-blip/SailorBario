@@ -1,28 +1,30 @@
 using System;
 using UnityEngine;
 
-public class Tower : MonoBehaviour
+public class Tower : MonoBehaviour, IInteractable
 {
-    private Transform _player;
-
-    public event EventHandler PlayerIsHere;
+    public event EventHandler PlayerEnteredOrExited;
     public event EventHandler PlayerPressed;
-    
-    private void Start()
+
+    private void OnTriggerEnter(Collider other)
     {
-        _player = FindObjectOfType<PlayerController>().transform;
+        if (other.TryGetComponent(out PlayerController _))
+        {
+            PlayerEnteredOrExited?.Invoke(this, null);
+        }
     }
 
-    private void Update()
+    private void OnTriggerExit(Collider other)
     {
-        if (Vector3.Distance(_player.position, transform.position) < 10)
+        if (other.TryGetComponent(out PlayerController _))
         {
-            PlayerIsHere?.Invoke(this, null);
-
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                PlayerPressed?.Invoke(this, null);
-            }
+            PlayerEnteredOrExited?.Invoke(this, null);
         }
+    }
+
+    public void Interact()
+    {
+        PlayerPressed?.Invoke(this, null);
+        PlayerEnteredOrExited?.Invoke(this, null);
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Animator))]
-public class Chest : MonoBehaviour, IOpenable, ICollectable
+public class Chest : MonoBehaviour, IInteractable
 {
     [SerializeField] private int _coinCount = 10;
     [SerializeField] private float _timeScaling = .5f; 
@@ -14,8 +14,7 @@ public class Chest : MonoBehaviour, IOpenable, ICollectable
     private Animator _animator;
 
     public event EventHandler<int> ChestCollected;
-    public event EventHandler PlayerEntered; 
-    public event EventHandler PlayerExited; 
+    public event EventHandler PlayerEnteredOrExited; 
 
     private void Start()
     {
@@ -26,7 +25,7 @@ public class Chest : MonoBehaviour, IOpenable, ICollectable
     {
         if (other.TryGetComponent(out PlayerController _))
         {
-            PlayerEntered?.Invoke(this,null);
+            PlayerEnteredOrExited?.Invoke(this,null);
         }
     }
 
@@ -34,23 +33,25 @@ public class Chest : MonoBehaviour, IOpenable, ICollectable
     {
         if (other.TryGetComponent(out PlayerController _))
         {
-            PlayerExited?.Invoke(this,null);
+            PlayerEnteredOrExited?.Invoke(this,null);
         }
     }
 
-    public void Open()
+    public void Interact()
     {
-        IsOpen = true;
-        _animator.SetBool("IsOpening", true);
-    }
-
-    public void Collect()
-    {
-        IsOpen = false;
-        _animator.SetBool("IsOpening", false);
-        ChestCollected?.Invoke(this, _coinCount);
-        
-        StartCoroutine(Destroy());
+        if (!IsOpen)
+        {
+            _animator.SetBool("IsOpening", true);
+            IsOpen = !IsOpen;
+        }
+        else
+        {
+            IsOpen = !IsOpen;
+            _animator.SetBool("IsOpening", false);
+            ChestCollected?.Invoke(this, _coinCount);
+            
+            StartCoroutine(Destroy());
+        }
     }
 
     private IEnumerator Destroy()

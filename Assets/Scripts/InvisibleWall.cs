@@ -5,7 +5,7 @@ public class InvisibleWall : MonoBehaviour
 {
     private void Start()
     {
-        FindObjectOfType<Dragon>().CoinsGoven += delegate(object sender, EventArgs args)
+        FindObjectOfType<Skeleton>().CoinsGiven += delegate(object sender, EventArgs args)
         {
             Destroy(this.gameObject);
         };

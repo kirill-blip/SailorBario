@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
+    public bool CanDestroyWithoutAnimation = true;
+    
     [SerializeField] private int _currentHealth = 100;
 
     private const int _minHealth = 0;
@@ -17,24 +19,28 @@ public class Health : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        if (damage <= 0) return;
+        if (damage <= 0) 
+            return;
 
         _currentHealth -= damage;
         
-        print($"{gameObject.name}'s health is {_currentHealth}");
-        
         HealthChanged?.Invoke(this, _currentHealth);
 
-        if (_currentHealth <= _minHealth) Kill();
+        if (_currentHealth <= _minHealth && CanDestroyWithoutAnimation)
+        {
+            Kill();
+        }
     }
 
     public void Hill(int hillPoint)
     {
-        if (hillPoint <= 0) return;
+        if (hillPoint <= 0) 
+            return;
 
         _currentHealth += hillPoint;
 
-        if (_currentHealth > _maxHealth) _currentHealth = _maxHealth;
+        if (_currentHealth > _maxHealth) 
+            _currentHealth = _maxHealth;
 
         HealthChanged?.Invoke(this, _currentHealth);
     }
@@ -42,5 +48,10 @@ public class Health : MonoBehaviour
     public void Kill()
     {
         Destroy(this.gameObject);
+    }
+
+    public void KillInTime(float time)
+    {
+        Invoke(nameof(Kill), time);
     }
 }
