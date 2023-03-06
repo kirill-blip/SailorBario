@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public class UI : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI _healthText;
+    [SerializeField] private HealthBar _healthBar;
     [SerializeField] private TextMeshProUGUI _tipText;
     [SerializeField] private TextMeshProUGUI _coinsCountText;
     [SerializeField] private TextMeshProUGUI _dragonWordsText;
@@ -57,9 +57,9 @@ public class UI : MonoBehaviour
         _tipText.gameObject.SetActive(!_tipText.gameObject.activeInHierarchy);
     }
 
-    private void OnHealthChanged(object sender, int e)
+    private void OnHealthChanged(object sender, int health)
     {
-        _healthText.text = e.ToString();
+        _healthBar.ChangeHealth(health);
     }
 
     private IEnumerator ChangeColor()

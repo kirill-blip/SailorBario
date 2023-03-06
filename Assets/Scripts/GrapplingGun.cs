@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Linq;
+﻿using System.Linq;
 using UnityEngine;
 
 public class GrapplingGun : MonoBehaviour
@@ -10,11 +9,16 @@ public class GrapplingGun : MonoBehaviour
 
     [Space(0.5f)] [Header("Rope Position")] [SerializeField]
     private Transform _ropePosition;
-
+    
+    
+    [Space(0.5f)] [Header("Joint settings")]
     [SerializeField] private float _spring = 4.5f;
     [SerializeField] private float _damper = 7f;
     [SerializeField] private float _massScale = 2f;
 
+    [Space(0.5f)]
+    [SerializeField] private AudioClip _harpoonClip;
+    
     private Transform _camera, _player;
 
     private LineRenderer _lineRenderer;
@@ -23,8 +27,11 @@ public class GrapplingGun : MonoBehaviour
     private float _maxDistance = 100f;
     private SpringJoint _joint;
 
+    private AudioManager _audioManager;
+
     private void Awake()
     {
+        _audioManager = FindObjectOfType<AudioManager>();
         _lineRenderer = GetComponent<LineRenderer>();
         _camera = Camera.main.transform;
         _player = FindObjectOfType<PlayerMovement>().transform;
@@ -53,6 +60,7 @@ public class GrapplingGun : MonoBehaviour
 
         if (Physics.Raycast(_camera.position, _camera.forward, out hit, _maxDistance, _whatIsCrabLayer))
         {
+            _audioManager.PlaySound(_harpoonClip);
             _grapplePoint = hit.point;
 
             _joint = _player.gameObject.AddComponent<SpringJoint>();
@@ -62,6 +70,7 @@ public class GrapplingGun : MonoBehaviour
         }
         else if (Physics.Raycast(_camera.position, _camera.forward, out hit, _maxDistance, _whatIsTreeLayer))
         {
+            _audioManager.PlaySound(_harpoonClip);
             _grapplePoint = hit.point;
 
             _joint = _player.gameObject.AddComponent<SpringJoint>();
@@ -71,6 +80,7 @@ public class GrapplingGun : MonoBehaviour
         }
         else if (Physics.Raycast(_camera.position, _camera.forward, out hit, _maxDistance, _whatIsGrappleable))
         {
+            _audioManager.PlaySound(_harpoonClip);
             _grapplePoint = hit.point;
 
             _joint = _player.gameObject.AddComponent<SpringJoint>();

@@ -11,6 +11,7 @@ public class Health : MonoBehaviour
     private const int _maxHealth = 100;
 
     public event EventHandler<int> HealthChanged;
+    public event EventHandler Healed;
 
     private void Start()
     {
@@ -32,17 +33,18 @@ public class Health : MonoBehaviour
         }
     }
 
-    public void Hill(int hillPoint)
+    public void Heal(int hitPoints)
     {
-        if (hillPoint <= 0) 
+        if (hitPoints <= 0)
             return;
 
-        _currentHealth += hillPoint;
+        _currentHealth += hitPoints;
 
         if (_currentHealth > _maxHealth) 
             _currentHealth = _maxHealth;
 
         HealthChanged?.Invoke(this, _currentHealth);
+        Healed?.Invoke(this, null);
     }
 
     public void Kill()

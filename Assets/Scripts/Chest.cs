@@ -1,52 +1,38 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 [RequireComponent(typeof(Animator))]
-public class Chest : MonoBehaviour, IInteractable
+public class Chest : InteractionBase
 {
     [SerializeField] private int _coinCount = 10;
-    [SerializeField] private float _timeScaling = .5f; 
-
-    public  bool IsOpen { get; set; }
+    [SerializeField] private float _timeScaling = .5f;
+    [SerializeField] private AudioClip _clip;
+    
+    private bool _isOpen = false;
     
     private Animator _animator;
-
+    private AudioSource _audioSource;
+    
     public event EventHandler<int> ChestCollected;
-    public event EventHandler PlayerEnteredOrExited; 
 
     private void Start()
     {
         _animator = GetComponent<Animator>();
+        _audioSource = GetComponent<AudioSource>();
     }
 
-    private void OnTriggerEnter(Collider other)
+    public override void Interact()
     {
-        if (other.TryGetComponent(out PlayerController _))
-        {
-            PlayerEnteredOrExited?.Invoke(this,null);
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        if (other.TryGetComponent(out PlayerController _))
-        {
-            PlayerEnteredOrExited?.Invoke(this,null);
-        }
-    }
-
-    public void Interact()
-    {
-        if (!IsOpen)
+        if (!_isOpen)
         {
             _animator.SetBool("IsOpening", true);
-            IsOpen = !IsOpen;
+            _audioSource.PlayOneShot(_clip);
+            _isOpen = !_isOpen;
         }
         else
         {
-            IsOpen = !IsOpen;
+            _isOpen = !_isOpen;
             _animator.SetBool("IsOpening", false);
             ChestCollected?.Invoke(this, _coinCount);
             
