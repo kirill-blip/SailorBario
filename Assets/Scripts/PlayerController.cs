@@ -71,7 +71,9 @@ public class PlayerController : MonoBehaviour
         var gordonFreeman = FindObjectOfType<Skeleton>();
         gordonFreeman.PlayerEnteredOrExited += OnPlayerEnteredOrExited;
 
-        FindObjectOfType<Tower>().PlayerEnteredOrExited += OnPlayerEnteredOrExited;
+        var tower = FindObjectOfType<Tower>();
+        tower.PlayerEnteredOrExited += OnPlayerEnteredOrExited;
+        tower.PlayerPressed += OnPlayerPressed;
         FindObjectOfType<Key>().KeyCollected += OnKeyCollected;
         FindObjectOfType<PlayerDetector>().PlayerEntered += OnPlayerEntered;
 
@@ -83,6 +85,11 @@ public class PlayerController : MonoBehaviour
             PlayerDead?.Invoke(this, null);
             Destroy(_grapplingGun.gameObject);
         };
+    }
+
+    private void OnPlayerPressed(object sender, EventArgs e)
+    {
+        _inputHandler.DisableMovingAndShooting();
     }
 
     private void Update()

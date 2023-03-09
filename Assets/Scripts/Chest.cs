@@ -6,7 +6,8 @@ public class Chest : InteractionBase
 {
     [SerializeField] private int _coinCount = 10;
     [SerializeField] private float _timeScaling = .5f;
-    [SerializeField] private AudioClip _clip;
+    [SerializeField] private AudioClip _openSound;
+    [SerializeField] private AudioClip _pickUpSound;
 
     private bool _isOpen;
 
@@ -27,15 +28,15 @@ public class Chest : InteractionBase
         {
             OnTipTextChanged(this, SecondTipText);
             _isOpen = !_isOpen;
-            
+
             _animator.SetBool("IsOpening", true);
-            _audioSource.PlayOneShot(_clip);
+            _audioSource.PlayOneShot(_openSound);
         }
         else
         {
             OnTipTextChanged(this, string.Empty);
             _isOpen = !_isOpen;
-            
+            _audioSource.PlayOneShot(_pickUpSound);
             _animator.SetBool("IsOpening", false);
             ChestCollected?.Invoke(this, _coinCount);
             ObjectDestroyer.DestroyInTime(this, .1f, _timeScaling);

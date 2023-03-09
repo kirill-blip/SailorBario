@@ -6,7 +6,7 @@ using UnityEngine.AI;
 [RequireComponent(typeof(Animator))]
 public class Crab : MonoBehaviour
 {
-    public float TimeToDestroy = 1;
+    public float TimeToDestroy = 2;
     
     public int Damage = 5;
 

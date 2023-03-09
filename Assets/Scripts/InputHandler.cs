@@ -30,7 +30,7 @@ public class InputHandler : MonoBehaviour
         _gameIsNotPaused = !_gameIsNotPaused;
             
         ActivateCursor();
-        StopRotatingAndShooting();
+        StopRotating();
         ChangeTimeScale();
     }
 
@@ -66,7 +66,7 @@ public class InputHandler : MonoBehaviour
         Cursor.lockState = Cursor.lockState == CursorLockMode.Locked ? CursorLockMode.None : CursorLockMode.Locked;
     }
 
-    private void StopRotatingAndShooting()
+    private void StopRotating()
     {
         _mouseLook.ForEach(x => x.CanRotate = !x.CanRotate);
     }
@@ -74,5 +74,11 @@ public class InputHandler : MonoBehaviour
     private void ChangeTimeScale()
     {
         Time.timeScale = Time.timeScale == 1 ? 0 : 1;
+    }
+
+    public void DisableMovingAndShooting()
+    {
+        _gameIsNotPaused = true;
+        StopRotating();
     }
 }
