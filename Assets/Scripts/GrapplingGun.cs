@@ -3,28 +3,31 @@ using UnityEngine;
 
 public class GrapplingGun : MonoBehaviour
 {
+    public bool CanShoot = true;
+
     [Header("Layers")] [SerializeField] private LayerMask _whatIsGrappleable;
     [SerializeField] private LayerMask _whatIsCrabLayer;
     [SerializeField] private LayerMask _whatIsTreeLayer;
 
-    [Space(0.5f)] [Header("Rope Position")] [SerializeField]
-    private Transform _ropePosition;
-    
-    
-    [Space(0.5f)] [Header("Joint settings")]
+    [Space(0.5f)] [Header("Rope Position")] 
+    [SerializeField] private Transform _ropePosition;
+
+
+    [SerializeField] private float _maxDistance = 50f;
+
+    [Space(0.5f)] [Header("Joint settings")] 
     [SerializeField] private float _spring = 4.5f;
+
     [SerializeField] private float _damper = 7f;
     [SerializeField] private float _massScale = 2f;
 
-    [Space(0.5f)]
-    [SerializeField] private AudioClip _harpoonClip;
-    
+    [Space(0.5f)] [SerializeField] private AudioClip _harpoonClip;
+
     private Transform _camera, _player;
 
     private LineRenderer _lineRenderer;
     private Vector3 _grapplePoint;
 
-    private float _maxDistance = 100f;
     private SpringJoint _joint;
 
     private AudioManager _audioManager;
@@ -37,24 +40,12 @@ public class GrapplingGun : MonoBehaviour
         _player = FindObjectOfType<PlayerMovement>().transform;
     }
 
-    private void Update()
-    {
-        if (Input.GetMouseButtonDown(0))
-        {
-            StartGrapple();
-        }
-        else if (Input.GetMouseButtonUp(0))
-        {
-            StopGrapple();
-        }
-    }
-
     private void LateUpdate()
     {
         DrawRope();
     }
 
-    private void StartGrapple()
+    public void StartGrapple()
     {
         RaycastHit hit;
 
@@ -101,19 +92,19 @@ public class GrapplingGun : MonoBehaviour
         }
     }
 
+    public void StopGrapple()
+    {
+        _lineRenderer.positionCount = 0;
+        var joints = _player.GetComponents<Joint>().ToList();
+        joints.ForEach(Destroy);
+        _player.GetComponent<Rigidbody>().useGravity = true;
+    }
+
     private void DrawRope()
     {
         if (!_joint) return;
 
         _lineRenderer.SetPosition(0, _ropePosition.position);
         _lineRenderer.SetPosition(1, _grapplePoint);
-    }
-
-    private void StopGrapple()
-    {
-        _lineRenderer.positionCount = 0;
-        var joints = _player.GetComponents<Joint>().ToList();
-        joints.ForEach(Destroy);
-        _player.GetComponent<Rigidbody>().useGravity = true;
     }
 }

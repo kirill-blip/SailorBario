@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -10,25 +9,17 @@ public class Skeleton : InteractionBase
     [SerializeField] private int _coinNeeded = 10;
     [SerializeField] private Transform _positionWhereToGo;
 
+    private bool _coinsIsGiven = false;
+
     private NavMeshAgent _navMeshAgent;
     private Animator _animator;
+    public event EventHandler CoinsGiven;
 
     private void Start()
     {
         _animator = GetComponent<Animator>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
-    }
-
-    public event EventHandler CoinsGiven;
-
-    private IEnumerator DestroyInTime()
-    {
-        var scale = new Vector3(.1f, .1f, .1f);
-        gameObject.LeanScale(scale, 1);
-
-        yield return new WaitUntil(() => gameObject.transform.localScale == scale);
-
-        Destroy(gameObject);
+        SecondTipText += $" {_coinNeeded} монет";
     }
 
     private void Update()
@@ -39,7 +30,7 @@ public class Skeleton : InteractionBase
         {
             _navMeshAgent.SetDestination(transform.position);
             _animator.SetBool("IsWalking", false);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(Vector3.right),
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(Vector3.back),
                 Time.deltaTime * _navMeshAgent.angularSpeed);
         }
     }
@@ -48,13 +39,22 @@ public class Skeleton : InteractionBase
     {
         var playerController = FindObjectOfType<PlayerController>();
 
-        if (playerController.Wallet.CanRemoveCoins(_coinNeeded))
+        if (_coinsIsGiven is false && playerController.Wallet.CanRemoveCoins(_coinNeeded))
         {
-            // StartCoroutine(DestroyInTime());
             _navMeshAgent.SetDestination(_positionWhereToGo.position);
             _animator.SetBool("IsWalking", true);
 
+            TipText = string.Empty;
+            OnTipTextChanged(this, TipText);
+
             CoinsGiven?.Invoke(this, null);
+
+            _coinsIsGiven = true;
+            CanInteract = false;
+        }
+        else if(_coinsIsGiven is false)
+        {
+            OnTipTextChanged(this, SecondTipText);
         }
     }
 }

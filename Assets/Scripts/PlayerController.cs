@@ -5,43 +5,63 @@ using UnityEngine;
 [RequireComponent(typeof(Health))]
 [RequireComponent(typeof(PlayerMovement))]
 [RequireComponent(typeof(Wallet))]
+[RequireComponent(typeof(InputHandler))]
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private AudioClip _healUpSound;
+    [SerializeField] private Transform _startPosition;
 
     private int _coinsCount;
 
+    #region Components
+
     private Health _health;
-    private PlayerMovement _playerMovement;
+    private InputHandler _inputHandler;
     private Wallet _wallet;
     private AudioManager _audioManager;
+    private GrapplingGun _grapplingGun;
+
+    #endregion
+    #region Properties
 
     public Health Health
     {
         get { return _health; }
     }
-
     public Wallet Wallet
     {
         get { return _wallet; }
     }
+    public InputHandler InputHandler
+    {
+        get { return _inputHandler; }
+    }
 
+    #endregion
+    
     private IInteractionAware _interactionAware;
+    private Key _key;
+
+    public event EventHandler PlayerDead;
 
     private void Awake()
     {
         _health = GetComponent<Health>();
-        _playerMovement = GetComponent<PlayerMovement>();
         _wallet = GetComponent<Wallet>();
+        _inputHandler = GetComponent<InputHandler>();
         _audioManager = FindObjectOfType<AudioManager>();
+        _grapplingGun = FindObjectOfType<GrapplingGun>();
     }
 
     private void Start()
     {
+        LeanTween.init(200000);
+        
         var trees = FindObjectsOfType<Tree>().ToList();
         trees.ForEach(tree => { tree.FruitCollected += OnFruitCollected; });
 
         var chests = FindObjectsOfType<Chest>();
+        
         foreach (var chest in chests)
         {
             chest.PlayerEnteredOrExited += OnPlayerEnteredOrExited;
@@ -52,8 +72,17 @@ public class PlayerController : MonoBehaviour
         gordonFreeman.PlayerEnteredOrExited += OnPlayerEnteredOrExited;
 
         FindObjectOfType<Tower>().PlayerEnteredOrExited += OnPlayerEnteredOrExited;
+        FindObjectOfType<Key>().KeyCollected += OnKeyCollected;
+        FindObjectOfType<PlayerDetector>().PlayerEntered += OnPlayerEntered;
 
         _health.Healed += (sender, args) => { _audioManager.PlaySound(_healUpSound); };
+        _health.Killed += (sender, args) =>
+        {
+            Camera.main.transform.parent = null;
+            Camera.main.GetComponent<MouseLook>().enabled = false;
+            PlayerDead?.Invoke(this, null);
+            Destroy(_grapplingGun.gameObject);
+        };
     }
 
     private void Update()
@@ -64,20 +93,33 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void OnPlayerEnteredOrExited(object sender, EventArgs e)
+    private void OnKeyCollected(object sender, Key key)
     {
-        // _interactionAware ??= sender as IInteractionAware;
+        _key = key;
+    }
 
+    private void OnPlayerEntered(object sender, EventArgs args)
+    {
+        transform.position = _startPosition.position;
+    }
+
+    private void OnPlayerEnteredOrExited(object sender, EventArgs args)
+    {
         _interactionAware = _interactionAware == null ? sender as IInteractionAware : null;
     }
 
-    private void OnChestCollected(object sender, int e)
+    private void OnChestCollected(object sender, int coins)
     {
-        _wallet.AddCoins(e);
+        _wallet.AddCoins(coins);
     }
 
-    private void OnFruitCollected(object sender, int e)
+    private void OnFruitCollected(object sender, int healPoints)
     {
-        _health.Heal(e);
+        _health.Heal(healPoints);
+    }
+
+    public bool HasKey()
+    {
+        return _key is not null;
     }
 }

@@ -12,6 +12,7 @@ public class Health : MonoBehaviour
 
     public event EventHandler<int> HealthChanged;
     public event EventHandler Healed;
+    public event EventHandler Killed;
 
     private void Start()
     {
@@ -29,6 +30,7 @@ public class Health : MonoBehaviour
 
         if (_currentHealth <= _minHealth && CanDestroyWithoutAnimation)
         {
+            Killed?.Invoke(this, null);
             Kill();
         }
     }

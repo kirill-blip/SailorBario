@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
@@ -6,18 +5,35 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private AudioSource _backgroundAudioSource;
     [SerializeField] private AudioSource _soundAudioSource;
 
-    [SerializeField] private List<AudioClip> _audioClips;
+    [SerializeField] private AudioClip _audioClip;
 
-    [SerializeField] private Vector2 _timeBetweenMusic = new Vector2(3, 5);
+    [SerializeField] private AudioClip _buttonSound;
+    [SerializeField] private AudioClip _endSound;
+
+    private void Awake()
+    {
+        PlayBackgroundMusic();
+    }
 
     private void PlayBackgroundMusic()
     {
-        _backgroundAudioSource.clip = _audioClips[Random.Range(0, _audioClips.Count)];
+        _backgroundAudioSource.clip = _audioClip;
         _backgroundAudioSource.Play();
     }
 
     public void PlaySound(AudioClip clip)
     {
         _soundAudioSource.PlayOneShot(clip);
+    }
+
+    public void PlayButtonSound()
+    {
+        _soundAudioSource.PlayOneShot(_buttonSound);
+    }
+
+    public void PlayEndSound()
+    {
+        _backgroundAudioSource.Stop();
+        PlaySound(_endSound);
     }
 }

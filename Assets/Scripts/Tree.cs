@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 
 public class Tree : MonoBehaviour
 {
     public int HillPoints = 10;
 
+    [SerializeField] private float _timeToGrow = 30f;
+    
     [SerializeField] private Mesh _treeFruitMesh;
     [SerializeField] private Mesh _treeWithoutFruitMesh;
     [SerializeField] private Material[] _colorsTreeFruit;
@@ -32,10 +35,14 @@ public class Tree : MonoBehaviour
         ChangeMeshAndColors(_treeWithoutFruitMesh, _colorsTreeWithoutFruit);
         FruitCollected?.Invoke(this, HillPoints);
         _isCollected = true;
+
+        StartCoroutine(AddFruit());
     }
 
-    public void AddFruit()
+    public IEnumerator AddFruit()
     {
+        yield return new WaitForSeconds(_timeToGrow);
+        
         ChangeMeshAndColors(_treeFruitMesh, _colorsTreeFruit);
         _isCollected = false;
     }

@@ -6,7 +6,13 @@ public class Tower : InteractionBase
 
     public override void Interact()
     {
-        PlayerPressed?.Invoke(this, null);
-        // OnPlayerEnteredOrExited();
+        if (FindObjectOfType<PlayerController>().HasKey())
+        {
+            PlayerPressed?.Invoke(this, null);
+        }
+        else
+        {
+            OnTipTextChanged(this, SecondTipText);
+        }
     }
 }

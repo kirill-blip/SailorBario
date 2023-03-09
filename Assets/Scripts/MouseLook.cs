@@ -6,10 +6,13 @@ public class MouseLook : MonoBehaviour
     [SerializeField] private float _sencitivity = 9.0f;
     [SerializeField] private float _angle = 45f;
 
+    public bool CanRotate = true;
     private float _rotationX = 0;
-    
+
     private void Update()
     {
+        if (!CanRotate) return;
+
         switch (_rotationAxes)
         {
             case RotationAxes.MouseX:
@@ -20,7 +23,7 @@ public class MouseLook : MonoBehaviour
                 _rotationX = Mathf.Clamp(_rotationX, -_angle, _angle);
 
                 var rotationY = transform.localEulerAngles.y;
-                
+
                 transform.localEulerAngles = new Vector3(_rotationX, rotationY, 0);
                 break;
         }

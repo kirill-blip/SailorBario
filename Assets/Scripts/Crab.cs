@@ -6,6 +6,8 @@ using UnityEngine.AI;
 [RequireComponent(typeof(Animator))]
 public class Crab : MonoBehaviour
 {
+    public float TimeToDestroy = 1;
+    
     public int Damage = 5;
 
     public float TimeBetweenAttacks;
@@ -46,7 +48,7 @@ public class Crab : MonoBehaviour
         {
             _animator.SetBool("IsDead", true);
             _agent.SetDestination(transform.position);
-            _health.KillInTime(2f);
+            ObjectDestroyer.DestroyInTime(this, .1f, TimeToDestroy);
 
             _canMove = false;
         }

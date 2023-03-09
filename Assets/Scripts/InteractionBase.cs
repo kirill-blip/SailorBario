@@ -3,13 +3,20 @@ using UnityEngine;
 
 public abstract class InteractionBase : MonoBehaviour, IInteractionAware
 {
+    public string TipText;
+    public string SecondTipText;
+
+    public bool CanInteract { get; set; } = true;
+
     public event EventHandler PlayerEnteredOrExited;
+    public event EventHandler<string> TipTextChanged;
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out PlayerController _))
+        if (CanInteract && other.TryGetComponent(out PlayerController _))
         {
             PlayerEnteredOrExited?.Invoke(this, null);
+            TipTextChanged?.Invoke(this, TipText);
         }
     }
 
@@ -17,14 +24,15 @@ public abstract class InteractionBase : MonoBehaviour, IInteractionAware
     {
         if (other.TryGetComponent(out PlayerController _))
         {
-            PlayerEnteredOrExited?.Invoke(this, null);
+            PlayerEnteredOrExited?.Invoke(null, null);
+            TipTextChanged?.Invoke(this, string.Empty);
         }
     }
-    
-    protected void OnPlayerEnteredOrExited()
+
+    protected void OnTipTextChanged(object sender, string tipText)
     {
-        PlayerEnteredOrExited?.Invoke(this, null);
+        TipTextChanged?.Invoke(sender, tipText);
     }
-    
+
     public abstract void Interact();
 }
