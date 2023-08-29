@@ -18,5 +18,4 @@ public static class ObjectDestroyer
         
         GameObject.Destroy(gameObject);
     } 
-
 }

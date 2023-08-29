@@ -649,7 +649,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6109665016001964710, guid: b36812d1cd463984ba98a5d85c19ddd7, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6109665016001964710, guid: b36812d1cd463984ba98a5d85c19ddd7, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1056,12 +1056,12 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1761049209}
   - {fileID: 263846434}
   - {fileID: 673887409}
   - {fileID: 2317785400432629664}
   - {fileID: 2036165877}
   - {fileID: 2062323345}
-  - {fileID: 1761049209}
   - {fileID: 970350936}
   - {fileID: 230744068}
   - {fileID: 322975201}
@@ -1421,7 +1421,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1906209340082874855, guid: dde8a715bc86c0548bb0dd04bfb9d0ce, type: 3}
       propertyPath: m_RootOrder
-      value: 1
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1906209340082874855, guid: dde8a715bc86c0548bb0dd04bfb9d0ce, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3085,7 +3085,7 @@ Transform:
   - {fileID: 1669676538}
   - {fileID: 864552786}
   m_Father: {fileID: 488398405}
-  m_RootOrder: 5
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1792301812
 PrefabInstance:
@@ -3590,7 +3590,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 6257153771961541286, guid: 9500f366683ec7844a3bae731131ca6f, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6257153771961541286, guid: 9500f366683ec7844a3bae731131ca6f, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3736,7 +3736,7 @@ Transform:
   - {fileID: 2504287640043110232}
   - {fileID: 2128088604792004788}
   m_Father: {fileID: 488398405}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2062405195
 GameObject:
@@ -4007,7 +4007,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1663215267135376225, guid: d676b61735497324485482648bd0c8d9, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 1663215267135376225, guid: d676b61735497324485482648bd0c8d9, type: 3}
       propertyPath: m_LocalPosition.x
